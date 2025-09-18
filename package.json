@@ -1,0 +1,32 @@
+{
+  "name": "server-demo",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "start": "rm -rf index.js; node index.js",
+    "dev": "bun index.ts",
+    "clean": "rm -f *.js *.js.map"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^5.0.3",
+    "@types/bun": "latest",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@fragola-ai/agentic": "^0.1.0",
+    "directory-tree": "^3.5.2",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "nanoid": "^5.1.5",
+    "pino": "^9.9.5",
+    "status-code-enum": "^1.0.0",
+    "zod": "^3.25.67"
+  }
+}
