@@ -101,7 +101,7 @@ export class FragolaCloud {
     exposeTool(tool: CloudTool) {
         const snakeCaseName = toSnakeCase(tool.name);
         const route: string = `${this.options.baseUrl}/${snakeCaseName}`;
-        const exist = this.exposedTools.find(e => e.route);
+        const exist = this.exposedTools.find(e => e.route == route);
     
         if (exist)
             throw new FragolaCloudError(`tool already exposed: ${route}`);

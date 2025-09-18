@@ -30,5 +30,5 @@ export const cloneRepo = async (url: string, requestId: string) => {
     if (extractedFolder) {
         await $`mv ${path}/${extractedFolder} ${path}/__SOURCE_CODE__`;
     }
-    return { success: true, data: path }
+    return { success: true, path: path, sourceCodePath: `${path}/__SOURCE_CODE__` }
 };

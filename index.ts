@@ -3,6 +3,7 @@ import pino from "pino";
 import dotenv from "dotenv";
 import {asCloudTool, FragolaCloud} from "./fragolaCloud/FragolaCloud";
 import { cloneRepoTool } from "./tools/cloneRepo/cloneRepo.tool";
+import { readFileById } from "./tools/readFileById/readFileById.tool";
 
 // Load environment variables
 dotenv.config();
@@ -25,6 +26,7 @@ app.get("/", (req, res) => {
 
 // Exposing tools for eleven labs
 fragolaCloud.exposeTool(asCloudTool(cloneRepoTool));
+fragolaCloud.exposeTool(asCloudTool(readFileById));
 
 // Lancer le serveur
 app.listen(PORT, () => {
