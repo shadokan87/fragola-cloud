@@ -10,6 +10,11 @@ dotenv.config();
 // Logger qui écrit dans la console
 const log = pino();
 const app = express();
+
+// Express middleware for JSON parsing
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 const fragolaCloud = new FragolaCloud(app);
 const PORT = process.env.PORT || 3000;
 

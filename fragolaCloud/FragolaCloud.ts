@@ -50,6 +50,7 @@ export class FragolaCloud {
         return (req: Request, res: Response, next: NextFunction) => {
             try {
                 if (tool.schema) {
+                    console.log("!body: ", JSON.stringify(req.body));
                     tool.schema.parse(req.body);
                 }
                 next();
