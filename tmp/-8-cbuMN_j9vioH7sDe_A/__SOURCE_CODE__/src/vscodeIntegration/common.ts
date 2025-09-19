@@ -1,1 +1,0 @@
-export const DIFF_VIEW_URI_SCHEME = "bootscreen-diff";
