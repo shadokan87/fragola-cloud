@@ -1,19 +1,9 @@
 import { tool } from "@fragola-ai/agentic";
 import { z } from "zod";
-import { toolFailure, toolSuccess } from "../../fragolaCloud";
+import { toolFailure } from "../../fragolaCloud";
 import { grepCodebaseInternal } from "./grepCodebaseInternal";
-// import { glob } from "glob";
-// import { readFileSync } from "fs";
 import { join } from "path";
 import { allIdToPath } from "../../services/treeService";
-// import { stdin, stdout } from "process";
-// import { ToolUnexpectedError } from "../../../exceptions/ToolUnexpectedError";
-// import { ToolInfo, ToolType } from "@types";
-
-// export const grepCodeBaseToolInfo: ToolInfo = {
-//     name: "grepCodeBase",
-//     description: 'A tool for searching the entire codebase for specific content. Use this when you need to find occurrences of a particular string, function name, or pattern across multiple files. It returns a list of items formatted as "<file_id>:<match_count>", allowing you to locate and quantify matches throughout the project.'
-// }
 
 export const grepCodeBaseSchema = z.object({
     content: z.string().describe("The text or pattern to search for in the codebase"),
@@ -33,6 +23,7 @@ export const grepCodebaseTool = tool({
         if (tokenType == "github repository") {
             const sourceCodePath = join(process.env["PWD"]!, "tmp", requestToken, "__SOURCE_CODE__");
             const ripGrepresult = grepCodebaseInternal(sourceCodePath, params);
+            console.log(`res: ${JSON.stringify(ripGrepresult)}, type: ${typeof ripGrepresult}`);
             if (Array.isArray(ripGrepresult)) {
                 const idToPath = allIdToPath.get(requestToken);
                 if (!idToPath)

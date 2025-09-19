@@ -1,34 +1,31 @@
 import { $ } from "bun";
+import simpleGit from "simple-git";
+import path from "path";
+
 export const cloneRepo = async (url: string, requestId: string) => {
     console.log("cloning: ", url, requestId);
-    const path = `./tmp/${requestId}`;
-    // Convert GitHub repo URL to tarball URL
-    const tarballUrl = url.replace(/\.git$/, "") + "/archive/refs/heads/main.tar.gz";
-    const response = await fetch(tarballUrl);
-    if (!response.ok) throw new Error(`Failed to fetch repo: ${response.statusText}`);
-    const arrayBuffer = await response.arrayBuffer();
+    const basePath = `./tmp/${requestId}`;
+    const sourceCodePath = `${basePath}/__SOURCE_CODE__`;
 
-    // Ensure the target directory exists
-    await $`mkdir -p ${path}`;
+    try {
+        // Ensure the target directory exists
+        await $`mkdir -p ${basePath}`;
 
-    const tarballPath = `${path}/repo.tar.gz`;
-    await Bun.write(tarballPath, new Uint8Array(arrayBuffer));
+        // Initialize simple-git
+        const git = simpleGit();
 
-    // Extract the tarball to a temporary location first
-    const extract = Bun.spawn({
-        cmd: ["tar", "-xzf", tarballPath, "-C", path],
-        stdout: "inherit",
-        stderr: "inherit"
-    });
-    await extract.exited;
-    if (extract.exitCode !== 0)
-        return { success: false, data: "extract_fail" };
+        // Clone the repository
+        console.log(`Cloning ${url} to ${sourceCodePath}`);
+        await git.clone(url, sourceCodePath);
 
-    // Find the extracted folder (usually repo-name-main) and rename to __SOURCE_CODE__
-    const files = await $`ls ${path}`.text();
-    const extractedFolder = files.trim().split('\n').find(f => f !== 'repo.tar.gz');
-    if (extractedFolder) {
-        await $`mv ${path}/${extractedFolder} ${path}/__SOURCE_CODE__`;
+        console.log(`Successfully cloned repository to ${sourceCodePath}`);
+        return { success: true, path: basePath, sourceCodePath: sourceCodePath };
+
+    } catch (error) {
+        console.error('Git clone failed:', error);
+        return { 
+            success: false, 
+            data: error instanceof Error ? error.message : "git_clone_fail" 
+        };
     }
-    return { success: true, path: path, sourceCodePath: `${path}/__SOURCE_CODE__` }
 };
