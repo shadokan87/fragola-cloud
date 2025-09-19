@@ -3,7 +3,6 @@ import z from "zod";
 import { allIdToPath, TreeService } from "../../services/treeService";
 import { toolFailure, toolSuccess } from "../../fragolaCloud";
 import { $ } from "bun";
-import path from "path";
 
 export const readFileById = tool({
     name: "read_file_by_id",

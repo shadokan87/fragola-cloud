@@ -5,6 +5,7 @@ import { asCloudTool, FragolaCloud } from "./fragolaCloud/FragolaCloud";
 import { cloneRepoTool } from "./tools/cloneRepo/cloneRepo.tool";
 import { readFileById } from "./tools/readFileById/readFileById.tool";
 import { authtoken } from "ngrok";
+import { grepCodebaseTool } from "./tools/grepCodebase/grepCodebase.tool";
 
 // Load environment variables
 dotenv.config();
@@ -28,6 +29,7 @@ app.get("/", (req, res) => {
 // Exposing tools for eleven labs
 fragolaCloud.exposeTool(asCloudTool(cloneRepoTool));
 fragolaCloud.exposeTool(asCloudTool(readFileById));
+fragolaCloud.exposeTool(asCloudTool(grepCodebaseTool));
 
 // Lancer le serveur
 app.listen(PORT, async () => {
