@@ -1,5 +1,5 @@
 import dirTree from 'directory-tree';
-import { nanoid } from 'nanoid';
+import { MD5 } from 'crypto-js';
 
 interface custom {
   id: string,
@@ -14,9 +14,6 @@ export interface TreeResult<T = custom> {
   children?: TreeResult[]
 }
 
-export type IdToPath = Map<TreeResult["custom"]["id"], string>;
-export const allIdToPath = new Map<string, IdToPath>();
-
 export class TreeService {
   constructor(private cwd: string = process.env.PWD!, private workspaceRoot: string, private onCustomIdAssignation?: (id: string, path: string) => void) { }
 
@@ -27,7 +24,7 @@ export class TreeService {
 
   async list(): Promise<TreeResult> {
     const filteredTree = dirTree(this.cwd, { exclude: [/node_modules/, /\.git/], attributes: ['type'] }, (item) => {
-      const id = nanoid();
+      const id = MD5(item.path).toString();
       item.custom = { id, fullPath: item.path };
       this.onCustomIdAssignation && this.onCustomIdAssignation(id, item.path);
       item.path = item.path.slice(this.workspaceRoot.length);

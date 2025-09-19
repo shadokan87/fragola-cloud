@@ -1,0 +1,27 @@
+{
+	"compilerOptions": {
+		"skipLibCheck": true,
+		"allowImportingTsExtensions": true,
+		"resolveJsonModule": true,
+		"noEmit": true,
+		"module": "CommonJS",
+		"target": "ES2022",
+		"lib": [
+			"ES2022",
+			"DOM"
+		],
+		"sourceMap": true,
+		"rootDir": "./",
+		"strict": true,
+		"esModuleInterop": true,
+		// "moduleResolution": "node"
+		"paths": {
+			"@types": ["./common/types.ts"],
+			"@utils": ["./common/utils.ts"]
+		},
+	},
+	"exclude": [
+		"./svelte",
+		"workers",
+	]
+}

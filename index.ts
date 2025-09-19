@@ -1,9 +1,10 @@
 import express from "express";
 import pino from "pino";
 import dotenv from "dotenv";
-import {asCloudTool, FragolaCloud} from "./fragolaCloud/FragolaCloud";
+import { asCloudTool, FragolaCloud } from "./fragolaCloud/FragolaCloud";
 import { cloneRepoTool } from "./tools/cloneRepo/cloneRepo.tool";
 import { readFileById } from "./tools/readFileById/readFileById.tool";
+import { authtoken } from "ngrok";
 
 // Load environment variables
 dotenv.config();
@@ -29,7 +30,20 @@ fragolaCloud.exposeTool(asCloudTool(cloneRepoTool));
 fragolaCloud.exposeTool(asCloudTool(readFileById));
 
 // Lancer le serveur
-app.listen(PORT, () => {
-  log.info(`Fragola cloud started on http://localhost:${PORT}`);
+app.listen(PORT, async () => {
+    console.log(`Fragola cloud started on http://localhost:${PORT}`);
+  // if (!process.env["PROD"]) {
+  //   console.log(PORT);
+  //   try {
+  //     const ngrok = require('ngrok');
+  //     const url = await ngrok.connect(PORT, {authtoken: process.env["NGROK_AUTH_TOKEN"]});
+  //     log.info(`Fragola cloud started on http://localhost:${PORT} | Ngrok tunnel open at ${url}`);
+  //   } catch (error) {
+  //     console.log(JSON.stringify(error))
+  //     log.error(`Failed to connect ngrok: ${error instanceof Error ? error.message : String(error)}`);
+  //   }
+  // } else {
+  //   //TODO: handle prod log
+  // }
   fragolaCloud.logExposedTools();
 });

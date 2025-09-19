@@ -1,0 +1,134 @@
+{
+  "name": "fragola-ai",
+  "displayName": "fragolaAI",
+  "description": "we'll see later",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.94.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "fragola-ai-view",
+          "title": "Fragola AI",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "fragola-ai-view": [
+        {
+          "type": "webview",
+          "id": "fragola-ai-sidebar",
+          "name": "Fragola AI Chat",
+          "initialSize": 400,
+          "minSize": 250,
+          "maxSize": 800
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "fragola-ai.openChat",
+        "title": "Open Fragola AI Chat"
+      },
+      {
+        "command": "fragola-ai.newConversation",
+        "title": "New Conversation",
+        "icon": "$(add)"
+      },
+      {
+        "command": "fragola-ai.showHistory",
+        "title": "Show conversation history",
+        "icon": "$(history)"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "fragola-ai.openChat",
+        "key": "ctrl+l",
+        "mac": "cmd+l"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "fragola-ai.newConversation",
+          "group": "navigation",
+          "when": "view == fragola-ai-sidebar"
+        },
+        {
+          "command": "fragola-ai.showHistory",
+          "group": "navigation",
+          "when": "view == fragola-ai-sidebar"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "svelte-compile": "npm run build --prefix ./svelte",
+    "compile": "npm run check-types && npm run lint && node esbuild.js",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "watch:svelte": "npm run build --prefix ./svelte -- --watch",
+    "package": "npm run check-types && npm run lint && node esbuild.js --production",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/knex": "^0.16.1",
+    "@types/mocha": "^10.0.9",
+    "@types/node": "^22.14.0",
+    "@types/vscode": "^1.94.0",
+    "@typescript-eslint/eslint-plugin": "^8.10.0",
+    "@typescript-eslint/parser": "^8.7.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "esbuild": "^0.24.0",
+    "eslint": "^9.13.0",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@electron/rebuild": "^3.7.1",
+    "@shadokan87/token.js": "0.5.3",
+    "@types/crypto-js": "^4.2.2",
+    "@types/lodash": "^4.17.14",
+    "@types/lowdb": "^1.0.15",
+    "@types/nanoid": "^3.0.0",
+    "@types/node-fetch": "^2.6.11",
+    "@vscode/ripgrep": "^1.15.10",
+    "axios": "^1.7.9",
+    "better-sqlite3": "^11.7.0",
+    "crypto-js": "^4.2.0",
+    "directory-tree": "^3.5.2",
+    "dotenv": "^16.4.5",
+    "dotenv-vault": "^1.26.2",
+    "fragola-ai": "./",
+    "glob": "^11.0.0",
+    "lodash": "^4.17.21",
+    "lowdb": "^7.0.1",
+    "marked": "^15.0.1",
+    "moment": "^2.30.1",
+    "nanoid": "^5.1.2",
+    "node-fetch": "^2.6.12",
+    "openai": "^4.85.1",
+    "portkey-ai": "^1.6.3",
+    "rxjs": "^7.8.1",
+    "uuid": "^11.0.3",
+    "zod": "^3.24.1",
+    "zod-to-json-schema": "^3.24.1"
+  }
+}

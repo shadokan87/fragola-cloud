@@ -3,27 +3,45 @@ import z from "zod";
 import { toolFailure, toolSuccess } from "../../fragolaCloud/FragolaCloud";
 import { nanoid } from "nanoid";
 import { cloneRepo } from "./cloneRepoInternal";
-import { TreeService } from "../../services/treeService";
+import { IdToPath, allIdToPath, TreeResult, TreeService } from "../../services/treeService";
+
+const formatProjectStructure = (map: IdToPath, sliceLen: number): string => {
+    const projectEmpty = "(this project is empty)";
+    let result: string[] = [];
+    if (map.size == 0)
+        return projectEmpty;
+    for (const [key, value] of map) {
+        result.push(`${key}:${value.slice(sliceLen)}`)
+    }
+    return result.join('\n');
+}
 
 export const cloneRepoTool = tool({
     name: "clone_github_repository",
     description: "will clone a github repository in the file system and return a repositoryId in case of success, on an error",
     schema: z.object({
-        repoUrl: z.string()
+        repo_url: z.string().describe("The github https url to clone")
     }),
-    handler: async ({ repoUrl }) => {
+    handler: async ({ repo_url }) => {
         const repositoryId = nanoid();
-        const cloneResult = await cloneRepo(repoUrl, repositoryId);
-        if (!cloneResult.success)
+        const cloneResult = await cloneRepo(repo_url, repositoryId);
+        if (!cloneResult.success || !cloneResult.sourceCodePath)
             return toolFailure({ message: cloneResult.data });
-        const tree = new TreeService(cloneResult.sourceCodePath, cloneResult.sourceCodePath!);
+
+        if (allIdToPath.has(repositoryId))
+            allIdToPath.delete(repositoryId);
+        const idToPath: IdToPath = new Map();
+        const tree = new TreeService(cloneResult.sourceCodePath, cloneResult.sourceCodePath, (id, path) => {
+            idToPath.set(id, path);
+        });
+        await tree.list();
+        allIdToPath.set(repositoryId, idToPath);
+        const formatted = formatProjectStructure(idToPath, cloneResult.sourceCodePath.length - 1);
         return toolSuccess({
-            result: {
                 instructions: "you can now read files by calling `read_file_by_id` by passing 'repositoryId' in the 'requestToken' field together with the tokenType 'github repository' and any file id present in the 'custom' field of the project sturcture",
                 repositoryId,
-                repositoryUrl: repoUrl,
-                projectSturcutre: await tree.list()
-            }
+                repositoryUrl: repo_url,
+                projectSturcutre: formatted
         })
     }
 });
